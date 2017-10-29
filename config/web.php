@@ -27,7 +27,7 @@ $config = [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => false,
             'enableSession' => false,
-            'loginUrl' =>'',
+            'loginUrl' => null,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -50,7 +50,20 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
+                'POST auth/<action:\w+>' => 'auth/<action>',
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => [
+                        'v1/user',
+                        'v1/task',
+                        'v1/post',
+                        'v1/comment',
+                        'v1/album',
+                        'v1/photo',
+                    ]
+                ],
             ],
         ],
         
