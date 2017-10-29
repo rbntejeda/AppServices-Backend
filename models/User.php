@@ -1,13 +1,15 @@
 <?php
 
+namespace app\models;
+
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use \Firebase\JWT\JWT;
 
 class User extends ActiveRecord implements IdentityInterface
 {
-    private $key = "ViN}YKbSt7e7EU1YJG1cSdN2#htMTyt@Fs=8_LMvxPna:`P<hsMGp(^3^9k?FDY";
-    
+    private static $key = "ViN}YKbSt7e7EU1YJG1cSdN2#htMTyt@Fs=8_LMvxPna:`P<hsMGp(^3^9k?FDY";
+
     public static function tableName()
     {
         return 'user';
@@ -32,9 +34,33 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
+        try
+        {
+            $decoded = JWT::decode($token, static::$key, array('HS256'));
+            // return static::findOne($decoded->sub);
+            $model=new Self();
+            $model->Attributes=[
+                "id"=>$decoded->sub,
+                "name"=>$decoded->name
+            ];
+            return $model;
+        }
+        catch(yii\UnexpectedValueException $e){}
+        catch(\Firebase\JWT\BeforeValidException $e){}
+        catch(\Firebase\JWT\ExpiredException $e){}
+        catch(\Firebase\JWT\SignatureInvalidException $e){}
+    }
 
-        $decoded = JWT::decode($jwt, $key, array('HS256'));
-        return static::findOne($decoded->sub);
+    public function getToken()
+    {
+        return JWT::encode([
+            'sub'=>$this->id,
+            'name'=>$this->name,
+            'iss'=>\Yii::$app->request->hostName,
+            "iat"=>time(),
+            "exp"=>time()+3600,
+            // "nbf"=>time()+30
+        ], static::$key);
     }
 
     /**
