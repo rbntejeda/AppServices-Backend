@@ -4,29 +4,15 @@ namespace app\modules\v1\models;
 
 use Yii;
 
-/**
- * This is the model class for table "album".
- *
- * @property string $userId
- * @property string $id
- * @property string $title
- *
- * @property User $user
- * @property Photo[] $photos
- */
 class Album extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+
     public static function tableName()
     {
         return 'album';
     }
 
-    /**
-     * @inheritdoc
-     */
+
     public function rules()
     {
         return [
@@ -37,9 +23,15 @@ class Album extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function extraFields()
+    {
+        return [
+            'user',
+            'photos'
+        ];
+    }
+
+
     public function attributeLabels()
     {
         return [
@@ -49,17 +41,11 @@ class Album extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'userId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPhotos()
     {
         return $this->hasMany(Photo::className(), ['albumId' => 'id']);
