@@ -8,7 +8,7 @@ use \Firebase\JWT\JWT;
 
 class User extends ActiveRecord implements IdentityInterface
 {
-    private static $key = "ViN}YKbSt7e7EU1YJG1cSdN2#htMTyt@Fs=8_LMvxPna:`P<hsMGp(^3^9k?FDY";
+    const KEYCODE = "ViN}YKbSt7e7EU1YJG1cSdN2#htMTyt@Fs=8_LMvxPna:`P<hsMGp(^3^9k?FDY";
 
     public static function tableName()
     {
@@ -36,7 +36,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         try
         {
-            $decoded = JWT::decode($token, static::$key, array('HS256'));
+            $decoded = JWT::decode($token, static::KEYCODE, array('HS256'));
             // return static::findOne($decoded->sub);
             $model=new Self();
             $model->Attributes=[
@@ -60,7 +60,7 @@ class User extends ActiveRecord implements IdentityInterface
             "iat"=>time(),
             "exp"=>time()+3600,
             // "nbf"=>time()+30
-        ], static::$key);
+        ], static::KEYCODE);
     }
 
     /**
